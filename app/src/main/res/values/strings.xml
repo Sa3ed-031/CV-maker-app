@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">ResumeCraft</string>
+    <string name="splash_subtitle">Craft Your Professional Journey</string>
+    <string name="login">Log In</string>
+    <string name="signup">Sign Up</string>
+    <string name="email">Email Address</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="dont_have_account">Don\'t have an account? Sign Up</string>
+    <string name="already_have_account">Already have an account? Log In</string>
+    <string name="invalid_email">Invalid email format</string>
+    <string name="password_weak">Password must be at least 8 chars with letters &amp; numbers</string>
+    <string name="passwords_do_not_match">Passwords do not match</string>
+
+    <string name="dashboard_title">My Resumes</string>
+    <string name="no_cvs">No CVs created yet. Tap + to begin!</string>
+    <string name="create_new_cv">Create New CV</string>
+
+    <string name="editor_title">CV Editor</string>
+    <string name="personal_info">Personal</string>
+    <string name="education">Education</string>
+    <string name="experience">Experience</string>
+    <string name="skills">Skills</string>
+
+    <string name="full_name">Full Name</string>
+    <string name="phone">Phone Number</string>
+    <string name="summary">Professional Summary</string>
+    <string name="degree">Degree / Qualification</string>
+    <string name="institution">School / University</string>
+    <string name="job_title">Job Title</string>
+    <string name="company">Company / Organization</string>
+    <string name="skills_comma">Skills (comma separated)</string>
+
+    <string name="next">Next</string>
+    <string name="back">Back</string>
+    <string name="preview">Preview CV</string>
+    <string name="preview_title">CV Preview</string>
+    <string name="export_pdf">Export to PDF</string>
+    <string name="classic_template">Classic</string>
+    <string name="modern_template">Modern Sidebar</string>
+    <string name="success_title">Success!</string>
+    <string name="pdf_exported">Your CV has been successfully exported as a PDF document.</string>
+    <string name="dismiss">Dismiss</string>
+</resources>
