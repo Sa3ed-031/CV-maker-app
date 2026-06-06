@@ -1,44 +1,92 @@
 <resources>
-    <string name="app_name">ResumeCraft</string>
-    <string name="splash_subtitle">Craft Your Professional Journey</string>
-    <string name="login">Log In</string>
-    <string name="signup">Sign Up</string>
-    <string name="email">Email Address</string>
-    <string name="password">Password</string>
-    <string name="confirm_password">Confirm Password</string>
-    <string name="dont_have_account">Don\'t have an account? Sign Up</string>
-    <string name="already_have_account">Already have an account? Log In</string>
-    <string name="invalid_email">Invalid email format</string>
-    <string name="password_weak">Password must be at least 8 chars with letters &amp; numbers</string>
-    <string name="passwords_do_not_match">Passwords do not match</string>
+        <string name="app_name">CVMaker</string>
 
-    <string name="dashboard_title">My Resumes</string>
-    <string name="no_cvs">No CVs created yet. Tap + to begin!</string>
-    <string name="create_new_cv">Create New CV</string>
+        <!-- login  -->
+        <string name="login_title">تسجيل الدخول للنظام</string>
+        <string name="register_title">إنشاء حساب جديد</string>
+        <string name="username_hint">اسم المستخدم أو البريد الإلكتروني</string>
+        <string name="email_hint">البريد الإلكتروني</string>
+        <string name="password_hint">كلمة المرور</string>
+        <string name="btn_login">دخول</string>
+        <string name="btn_register">انشاء الحساب</string>
+        <string name="switch_btn_register">ليس لديك حساب؟ إنشاء حساب جديد الآن</string>
+        <string name="switch_btn_login">لديك حساب بالفعل؟ تسجيل الدخول</string>
+        <string name="email_error">الرجاء إدخال البريد الإلكتروني!</string>
+        <string name="username_error">الرجاء إدخال اسم المستخدم!</string>
+        <string name="pass_error">الرجاء إدخال كلمة المرور!</string>
 
-    <string name="editor_title">CV Editor</string>
-    <string name="personal_info">Personal</string>
-    <string name="education">Education</string>
-    <string name="experience">Experience</string>
-    <string name="skills">Skills</string>
+        <!-- steps titles & buttons -->
+        <string name="step_personal">1. الشخصية</string>
+        <string name="step_education">2. التعليم</string>
+        <string name="step_skills">3. المهارات</string>
+        <string name="step_additional">4. الإضافية</string>
+        <string name="btn_next">التالي</string>
+        <string name="btn_back">السابق</string>
 
-    <string name="full_name">Full Name</string>
-    <string name="phone">Phone Number</string>
-    <string name="summary">Professional Summary</string>
-    <string name="degree">Degree / Qualification</string>
-    <string name="institution">School / University</string>
-    <string name="job_title">Job Title</string>
-    <string name="company">Company / Organization</string>
-    <string name="skills_comma">Skills (comma separated)</string>
+        <!-- step #1 -->
+        <string name="step1_title">الخطوة 1: البيانات الشخصية</string>
+        <string name="step1_subtitle">يرجى إدخال معلوماتك الرسمية بدقة لإنشاء السيرة الذاتية</string>
+        <string name="hint_full_name">الاسم الكامل (ثلاثي)</string>
+        <string name="hint_phone_number">رقم الهاتف (مع رمز البلد)</string>
+        <string name="hint_national_id">الرقم الوطني / الهوية الرسمية</string>
+        <string name="error_empty_name">الرجاء إدخال الاسم الكامل، لا يمكن تركه فارغاً!</string>
+        <string name="error_invalid_phone">رقم الهاتف غير صحيح! يجب أن يتكون من 10 أرقام على الأقل.</string>
+        <string name="error_empty_id">الرجاء إدخال الرقم الوطني الخاص بك للتوثيق!</string>
+        <!-- <string name="personal_title">البيانات الشخصية</string> -->
+        <string name="hint_phone">رقم الهاتف</string>
+        <string name="hint_address">العنوان الحالي</string>
 
-    <string name="next">Next</string>
-    <string name="back">Back</string>
-    <string name="preview">Preview CV</string>
-    <string name="preview_title">CV Preview</string>
-    <string name="export_pdf">Export to PDF</string>
-    <string name="classic_template">Classic</string>
-    <string name="modern_template">Modern Sidebar</string>
-    <string name="success_title">Success!</string>
-    <string name="pdf_exported">Your CV has been successfully exported as a PDF document.</string>
-    <string name="dismiss">Dismiss</string>
-</resources>
+        <!-- step #2 -->
+        <string name="step2_title">الخطوة 2: المؤهلات والخبرات</string>
+        <string name="step2_subtitle">أدخل تفاصيل تحصيلك الأكاديمي وخبراتك العملية السابقة لتوثيقها</string>
+        <string name="hint_specialty">التخصص الدراسي</string>
+        <string name="hint_graduation_year">سنة التخرج (YYYY)</string>
+        <string name="hint_university">الجامعة / المعهد التعليمي</string>
+        <string name="hint_experience">الخبرات المهنية أو التدريبية (إن وجدت)</string>
+        <string name="education_title">المؤهل التعليمي والخبرة</string>
+        <string name="error_empty_university">الرجاء تحديد اسم الجامعة أو المؤسسة التعليمية!</string>
+        <string name="error_empty_specialty">حقل التخصص مطلوب لبناء ملف السيرة الذاتية!</string>
+        <string name="error_invalid_year">سنة التخرج غير صحيحة! يرجى إدخال سنة منطقية من 4 أرقام.</string>
+
+        <!-- step #3 -->
+        <string name="step3_title">الخطوة 3: المهارات واللغات</string>
+        <string name="step3_subtitle">أدخل مهاراتك التقنية واللغات التي تتقنها لتميز سيرتك الذاتية</string>
+        <string name="hint_skills">المهارات التقنية والمهنية (مثال: Kotlin, UI Design, Git)</string>
+        <string name="hint_languages">اللغات المتقنة (مثال: العربية، الإنجليزية)</string>
+        <string name="btn_upload_photo">تحميل الصورة الشخصية</string>
+        <string name="error_empty_languages">الرجاء إدخال لغة واحدة على الأقل (مثلاً: العربية)!</string>
+        <string name="error_empty_skills">حقل المهارات أساسي ومطلب رئيسي لبناء ملف السيرة الذاتية!</string>
+
+        <!-- step #4 -->
+        <string name="step4_title">الخطوة 4: مراجعة السيرة الذاتية</string>
+        <string name="step4_subtitle">يرجى مراجعة بياناتك الموثقة بدقة قبل إتمام العملية وتصدير الملف</string>
+        <string name="btn_finish">حفظ وإنشاء السيرة الذاتية PDF</string>
+        <string name="section_personal_title">البيانات الشخصية</string>
+        <string name="section_academic_title">المؤهلات الأكاديمية</string>
+        <string name="section_skills_title">المهارات واللغات</string>
+        <string name="btn_export_cv">تصدير وحفظ السيرة الذاتية</string>
+        <string name="label_full_name">الاسم الكامل: </string>
+        <string name="label_phone_number">رقم الهاتف: </string>
+        <string name="label_university">الجامعة / المعهد: </string>
+        <string name="label_specialty">التخصص الدراسي: </string>
+        <string name="label_skills">المهارات التقنية: </string>
+        <string name="label_languages">اللغات المتقنة: </string>
+        <string name="placeholder_dynamic_data">سيتم جلب البيانات الحقيقية لاحقاً</string>
+
+        <!-- Admin -->
+        <string name="dashboard_title">لوحة تحكم الموظف</string>
+        <string name="admin_panel_title">لوحة مراقبة المستندات والطلبات</string>
+        <string name="tab_pending">بانتظار المراجعة</string>
+        <string name="tab_approved">الطلبات المقبولة</string>
+        <string name="tab_rejected">الطلبات المرفوضة</string>
+        <string name="text_no_requests">لا يوجد طلبات في هذا القسم حالياً</string>
+        <string name="btn_logout_admin">تسجيل خروج الموظف</string>
+        <string name="label_applicant">المتقدم: </string>
+        <string name="label_national_id_admin">الرقم الوطني: </string>
+        <string name="btn_action_view">استعراض ومراجعة</string>
+
+        <!-- Print PDF -->
+        <string name="toast_pdf_success">تم حفظ السيرة الذاتية بنجاح في مجلد Downloads!</string>
+        <string name="toast_pdf_error">حدث خطأ أثناء تصدير ملف PDF، يرجى المحاولة مجدداً.</string>
+
+    </resources>
