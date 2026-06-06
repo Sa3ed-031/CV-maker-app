@@ -1,168 +1,135 @@
 package com.example.cvmaker
 
+import android.content.ContentValues
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
+import android.net.Uri
+import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import android.widget.Toast
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.OutputStream
 
 object PdfExporter {
 
-    fun exportCvToPdf(
-        context: Context,
-        fullName: String,
-        phone: String,
-        nationalId: String,
-        university: String,
-        specialty: String,
-        gradYear: String,
-        experience: String,
-        skills: String,
-        languages: String
-    ) {
-        // 1. إنشاء كائن الـ PDF وتحديد أبعاد الصفحة (A4 القياسية: 595 عرض × 842 طول بيكسل)
+    // الدالة الرئيسية لاستقبال البيانات وتوليد الـ PDF
+    fun saveCv(context: Context, isTwoColumn: Boolean, viewModel: CvViewModel) {
         val pdfDocument = PdfDocument()
+
+        // قياسات الصفحة القياسية A4 بالنقاط (595 عرض × 842 ارتفاع)
         val pageInfo = PdfDocument.PageInfo.Builder(595, 842, 1).create()
         val page = pdfDocument.startPage(pageInfo)
         val canvas: Canvas = page.canvas
+        val paint = Paint().apply { isAntiAlias = true }
 
-        // 2. تجهيز أدوات الرسم والألوان (الهوية البصرية)
-        val paint = Paint()
+        // 🎨 الألوان المخصصة للهوية البصرية للـ PDF
+        val greenPrimary = Color.parseColor("#4CAF50")
+        val bgGray = Color.parseColor("#F5F5F5")
+        val textDark = Color.parseColor("#212121")
 
-        // الألوان بصيغة Hex المتناسقة مع التطبيق
-        val greenPrimaryColor = Color.parseColor("#4CAF50") // الأخضر الرسمي
-        val backgroundGrayColor = Color.parseColor("#F5F5F5") // الرمادي الفاتح
-        val textDarkColor = Color.parseColor("#212121") // الخط الغامق الواضح
-
-        // 3. رسم العمود الجانبي الملون (العمود الضيق - العرض 200 بيكسل)
-        paint.color = backgroundGrayColor
-        canvas.drawRect(0f, 0f, 200f, 842f, paint)
-
-        // 4. خط فاصل عمودي أنيق بين العمودين بلون أخضر رفيع
-        paint.color = greenPrimaryColor
-        paint.strokeWidth = 3f
-        canvas.drawLine(200f, 0f, 200f, 842f, paint)
-
-        // ----------------------------------------------------------------------
-        // 🟢 كتابة محتويات العمود الجانبي (البيانات الشخصية واللغات)
-        // ----------------------------------------------------------------------
-        paint.isAntiAlias = true
-        paint.color = textDarkColor
-
-        // الاسم الكامل (عنوان كبير في الأعلى)
-        paint.textSize = 16f
-        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        canvas.drawText(fullName, 15f, 50f, paint)
-
-        // خطوط التواصل والمعلومات الشخصية
-        paint.textSize = 11f
-        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
-        canvas.drawText("الهاتف: $phone", 15f, 90f, paint)
-        canvas.drawText("الرقم الوطني: $nationalId", 15f, 115f, paint)
-
-        // قسم اللغات (جوات العمود الجانبي)
-        paint.color = greenPrimaryColor
-        paint.textSize = 13f
-        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        canvas.drawText("اللغات المتقنة", 15f, 180f, paint)
-
-        paint.color = textDarkColor
-        paint.textSize = 11f
-        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
-
-        // تقسيم اللغات لأسطر إذا كتبت بفواصل
-        var langY = 205f
-        languages.split("،", ",", "\n").forEach { lang ->
-            if (lang.trim().isNotEmpty()) {
-                canvas.drawText("• ${lang.trim()}", 15f, langY, paint)
-                langY += 20f
-            }
+        // فحص خيار الـ Toggle لرسم الشكل المطلوب بالـ Canvas
+        if (isTwoColumn) {
+            // رسم نمط العمودين
+            drawTwoColumnLayout(canvas, paint, viewModel, greenPrimary, bgGray, textDark)
+        } else {
+            // رسم النمط الكلاسيكي الطولي
+            drawClassicLayout(canvas, paint, viewModel, greenPrimary, textDark)
         }
 
-        // ----------------------------------------------------------------------
-        // ⚪ كتابة محتويات العمود الرئيسي العريض (المؤهلات والخبرات والمهارات)
-        // ----------------------------------------------------------------------
-        val startX = 220f // إحداثيات بدء الكتابة بالعمود العريض لترك مسافة أمان
-
-        // القسم الأكاديمي
-        paint.color = greenPrimaryColor
-        paint.textSize = 14f
-        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        canvas.drawText("المؤهلات الأكاديمية", startX, 50f, paint)
-
-        paint.color = Color.LTGRAY
-        canvas.drawLine(startX, 60f, 570f, 60f, paint) // خط أفقي فاصل تحت العنوان
-        paint.color = textDarkColor
-        paint.textSize = 12f
-        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        canvas.drawText("المؤسسة: $university", startX, 85f, paint)
-
-        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
-        canvas.drawText("التخصص: $specialty", startX, 110f, paint)
-        canvas.drawText("سنة التخرج: $gradYear", startX, 135f, paint)
-
-        // قسم الخبرات المهنية
-        paint.color = greenPrimaryColor
-        paint.textSize = 14f
-        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        canvas.drawText("الخبرات المهنية", startX, 185f, paint)
-
-        paint.color = Color.LTGRAY
-        canvas.drawLine(startX, 195f, 570f, 195f, paint)
-
-        paint.color = textDarkColor
-        paint.textSize = 11f
-        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
-
-        var expY = 220f
-        val expText = if (experience.trim().isEmpty()) "لا توجد خبرات سابقة" else experience
-        expText.split("\n").forEach { line ->
-            canvas.drawText(line, startX, expY, paint)
-            expY += 20f
-        }
-
-        // قسم المهارات التقنية
-        paint.color = greenPrimaryColor
-        paint.textSize = 14f
-        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
-        canvas.drawText("المهارات التقنية", startX, expY + 20f, paint)
-
-        paint.color = Color.LTGRAY
-        canvas.drawLine(startX, expY + 30f, 570f, expY + 30f, paint)
-
-        paint.color = textDarkColor
-        paint.textSize = 11f
-        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
-
-        var skillY = expY + 55f
-        skills.split("،", ",", "\n").forEach { skill ->
-            if (skill.trim().isNotEmpty()) {
-                canvas.drawText("✔ ${skill.trim()}", startX, skillY, paint)
-                skillY += 20f
-            }
-        }
-
-        // 5. إنهاء الصفحة وإغلاق مستند الـ PDF
         pdfDocument.finishPage(page)
 
-        // 6. حفظ الملف في مجلد Downloads الخاص بجهاز المستخدم
-        val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        val file = File(downloadsDir, "CVMaker_${nationalId}.pdf")
+        // حفظ الملف بشكل متوافق وآمن عبر الـ MediaStore ومجلد الـ Downloads
+        saveFileToDownloads(context, pdfDocument, viewModel.nationalId)
+    }
 
-        try {
-            pdfDocument.writeTo(FileOutputStream(file))
-            Toast.makeText(context, context.getString(R.string.toast_pdf_success), Toast.LENGTH_LONG).show()
-        } catch (e: IOException) {
-            e.printStackTrace()
+    // دالة رسم نظام العمودين
+    private fun drawTwoColumnLayout(canvas: Canvas, paint: Paint, viewModel: CvViewModel, primaryColor: Int, bgColors: Int, textColor: Int) {
+        // خلفية العمود الجانبي (الأيسر أو الأيمن حسب التنسيق)
+        paint.color = bgColors
+        canvas.drawRect(0f, 0f, 200f, 842f, paint)
+
+        paint.color = primaryColor
+        canvas.drawLine(200f, 0f, 200f, 842f, paint)
+
+        // رسم النصوص الأساسية
+        paint.color = textColor
+        paint.textSize = 14f
+        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        canvas.drawText(viewModel.fullName, 15f, 50f, paint)
+
+        paint.textSize = 10f
+        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
+        canvas.drawText("الهاتف: ${viewModel.phone}", 15f, 80f, paint)
+
+        // قسم المشاريع والإنجازات بالعمود الواسع
+        paint.color = primaryColor
+        paint.textSize = 14f
+        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        canvas.drawText("المشاريع والإنجازات", 215f, 50f, paint)
+
+        paint.color = textColor
+        paint.textSize = 11f
+        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
+        canvas.drawText(viewModel.projects, 215f, 75f, paint)
+    }
+
+    // دالة رسم النمط الكلاسيكي التقليدي
+    private fun drawClassicLayout(canvas: Canvas, paint: Paint, viewModel: CvViewModel, primaryColor: Int, textColor: Int) {
+        paint.color = primaryColor
+        paint.textSize = 20f
+        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        canvas.drawText(viewModel.fullName, 30f, 60f, paint)
+
+        paint.color = textColor
+        paint.textSize = 12f
+        paint.typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL)
+        canvas.drawText("الهاتف: ${viewModel.phone} | الرقم الوطني: ${viewModel.nationalId}", 30f, 85f, paint)
+        canvas.drawLine(30f, 100f, 565f, 100f, paint)
+
+        paint.color = primaryColor
+        canvas.drawText("المشاريع والإنجازات:", 30f, 130f, paint)
+        paint.color = textColor
+        canvas.drawText(viewModel.projects, 30f, 155f, paint)
+    }
+
+    // دالة الحفظ المتوافق في مجلد ال Downloads (حل مشكلة الـ API القديم والحديث)
+    private fun saveFileToDownloads(context: Context, pdfDocument: PdfDocument, id: String) {
+        val resolver = context.contentResolver
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, "CVMaker_${id}.pdf")
+            put(MediaStore.MediaColumns.MIME_TYPE, "application/pdf")
+        }
+
+        val uri: Uri? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+            resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
+        } else {
+            val downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val file = java.io.File(downloadsDir, "CVMaker_${id}.pdf")
+            contentValues.put(MediaStore.MediaColumns.DATA, file.absolutePath)
+            resolver.insert(MediaStore.Files.getContentUri("external"), contentValues)
+        }
+
+        if (uri != null) {
+            try {
+                val outputStream: OutputStream? = resolver.openOutputStream(uri)
+                if (outputStream != null) {
+                    pdfDocument.writeTo(outputStream)
+                    outputStream.close()
+                    Toast.makeText(context, context.getString(R.string.toast_pdf_success), Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(context, context.getString(R.string.toast_pdf_error), Toast.LENGTH_LONG).show()
+            } finally {
+                pdfDocument.close()
+            }
+        } else {
             Toast.makeText(context, context.getString(R.string.toast_pdf_error), Toast.LENGTH_LONG).show()
-        } finally {
-            pdfDocument.close()
         }
     }
 }

@@ -148,10 +148,7 @@ fun LoginScreen(navController: NavController) {
                     if (u.isEmpty()) { usernameError = "الرجاء إدخال اسم المستخدم!"; return@Button }
                     if (p.isEmpty()) { passwordError = "الرجاء إدخال كلمة المرور!"; return@Button }
 
-                    if (u == "admin" && p == "123") {
-                        // موظف  عالداشبورد
-                        navController.navigate("dashboard") { popUpTo("login") { inclusive = true } }
-                    } else if (u == "user" && p == "123") {
+                    if (u == "user1" && p == "123") {
                         // يوزر مسجل قبل لخطوات السيرة
                         navController.navigate("step1") { popUpTo("login") { inclusive = true } }
                     } else {

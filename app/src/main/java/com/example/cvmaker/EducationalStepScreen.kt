@@ -20,13 +20,10 @@ import com.example.cvmaker.ui.theme.TextDark
 import com.example.cvmaker.ui.theme.CardWhite
 
 @Composable
-fun EducationalStepScreen(navController: NavController) {
-    // حقول الإدخال (State)
-    var university by remember { mutableStateOf("") }
-    var specialty by remember { mutableStateOf("") }
-    var gradYear by remember { mutableStateOf("") }
-    var experience by remember { mutableStateOf("") }
-
+fun EducationalStepScreen(
+    navController: NavController,
+    viewModel: CvViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     // حالات الأخطاء والتحقق ديناميكياً (Validation State)
     var isUniError by remember { mutableStateOf(false) }
     var isSpecialtyError by remember { mutableStateOf(false) }
@@ -95,9 +92,9 @@ fun EducationalStepScreen(navController: NavController) {
 
                 // 1. الجامعة
                 OutlinedTextField(
-                    value = university,
+                    value = viewModel.university,
                     onValueChange = {
-                        university = it
+                        viewModel.university = it
                         if (it.trim().isNotEmpty()) isUniError = false
                     },
                     label = { Text(stringResource(id = R.string.hint_university)) },
@@ -115,9 +112,9 @@ fun EducationalStepScreen(navController: NavController) {
 
                 // 2. التخصص
                 OutlinedTextField(
-                    value = specialty,
+                    value = viewModel.specialty,
                     onValueChange = {
-                        specialty = it
+                        viewModel.specialty = it
                         if (it.trim().isNotEmpty()) isSpecialtyError = false
                     },
                     label = { Text(stringResource(id = R.string.hint_specialty)) },
@@ -135,9 +132,9 @@ fun EducationalStepScreen(navController: NavController) {
 
                 // 3. سنة التخرج (مع تحقق صارم من 4 خانات)
                 OutlinedTextField(
-                    value = gradYear,
+                    value = viewModel.gradYear,
                     onValueChange = {
-                        gradYear = it
+                        viewModel.gradYear = it
                         if (it.trim().length == 4) isYearError = false
                     },
                     label = { Text(stringResource(id = R.string.hint_graduation_year)) },
@@ -154,15 +151,6 @@ fun EducationalStepScreen(navController: NavController) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // 4. الخبرات (اختياري متعدد الأسطر)
-                OutlinedTextField(
-                    value = experience,
-                    onValueChange = { experience = it },
-                    label = { Text(stringResource(id = R.string.hint_experience)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = fieldColors,
-                    minLines = 3
-                )
             }
         }
 
@@ -185,9 +173,9 @@ fun EducationalStepScreen(navController: NavController) {
             // التالي مع Validation للخطوة التانية
             Button(
                 onClick = {
-                    val isUniEmpty = university.trim().isEmpty()
-                    val isSpecialtyEmpty = specialty.trim().isEmpty()
-                    val isYearInvalid = gradYear.trim().length != 4
+                    val isUniEmpty = viewModel.university.trim().isEmpty()
+                    val isSpecialtyEmpty = viewModel.specialty.trim().isEmpty()
+                    val isYearInvalid = viewModel.gradYear.trim().length != 4
                     if (isUniEmpty) isUniError = true
                     if (isSpecialtyEmpty) isSpecialtyError = true
                     if (isYearInvalid) isYearError = true

@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.cvmaker.ui.theme.GreenPrimary
 import com.example.cvmaker.ui.theme.BackgroundGray
@@ -18,7 +19,10 @@ import com.example.cvmaker.ui.theme.TextDark
 import com.example.cvmaker.ui.theme.CardWhite
 
 @Composable
-fun SkillsStepScreen(navController: NavController) {
+fun SkillsStepScreen(
+    navController: NavController,
+    viewModel: CvViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     // حقول الإدخال (State)
     var skills by remember { mutableStateOf("") }
     var languages by remember { mutableStateOf("") }
@@ -90,9 +94,9 @@ fun SkillsStepScreen(navController: NavController) {
 
                 // 1. المهارات (حقل كبير وكذا الأسطر إجباري)
                 OutlinedTextField(
-                    value = skills,
+                    value = viewModel.skills,
                     onValueChange = {
-                        skills = it
+                        viewModel.skills = it
                         if (it.trim().isNotEmpty()) isSkillsError = false
                     },
                     label = { Text(stringResource(id = R.string.hint_skills)) },
@@ -111,9 +115,9 @@ fun SkillsStepScreen(navController: NavController) {
 
                 // 2. اللغات (إجباري)
                 OutlinedTextField(
-                    value = languages,
+                    value = viewModel.languages,
                     onValueChange = {
-                        languages = it
+                        viewModel.languages = it
                         if (it.trim().isNotEmpty()) isLanguagesError = false
                     },
                     label = { Text(stringResource(id = R.string.hint_languages)) },
@@ -149,8 +153,8 @@ fun SkillsStepScreen(navController: NavController) {
             // التالي مع الـ Validation الصارم للخطوة الثالثة
             Button(
                 onClick = {
-                    val isSkillsEmpty = skills.trim().isEmpty()
-                    val isLanguagesEmpty = languages.trim().isEmpty()
+                    val isSkillsEmpty = viewModel.skills.trim().isEmpty()
+                    val isLanguagesEmpty = viewModel.languages.trim().isEmpty()
 
                     if (isSkillsEmpty) isSkillsError = true
                     if (isLanguagesEmpty) isLanguagesError = true

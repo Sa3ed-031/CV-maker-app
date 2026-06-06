@@ -18,13 +18,28 @@ import com.example.cvmaker.ui.theme.GreenPrimary
 import com.example.cvmaker.ui.theme.BackgroundGray
 import com.example.cvmaker.ui.theme.TextDark
 import com.example.cvmaker.ui.theme.CardWhite
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage // تأكد أن مكتبة Coil مضافة في الـ build.gradle
 
 @Composable
-fun PersonalInfoStepScreen(navController: NavController) {
-    // هي حقول المدخلات (State)
-    var fullName by remember { mutableStateOf("") }
-    var phoneNumber by remember { mutableStateOf("") }
-    var nationalId by remember { mutableStateOf("") }
+fun PersonalInfoStepScreen (
+    navController: NavController,
+    viewModel: CvViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        viewModel.selectedImageUri = uri // حفظ مسار الصورة عند اختيارها
+    }
 
     // وهي حالات الأخطاء والتحقق (Validation State)
     var isNameError by remember { mutableStateOf(false) }
@@ -90,9 +105,9 @@ fun PersonalInfoStepScreen(navController: NavController) {
                 )
 
                 OutlinedTextField(
-                    value = fullName,
+                    value = viewModel.fullName,
                     onValueChange = {
-                        fullName = it
+                        viewModel.fullName = it
                         if (it.trim().isNotEmpty()) isNameError = false
                     },
                     label = { Text(stringResource(id = R.string.hint_full_name)) },
@@ -109,9 +124,9 @@ fun PersonalInfoStepScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
-                    value = phoneNumber,
+                    value = viewModel.phone,
                     onValueChange = {
-                        phoneNumber = it
+                        viewModel.phone = it
                         if (it.trim().length >= 10) isPhoneError = false
                     },
                     label = { Text(stringResource(id = R.string.hint_phone_number)) },
@@ -129,9 +144,9 @@ fun PersonalInfoStepScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
-                    value = nationalId,
+                    value = viewModel.nationalId,
                     onValueChange = {
-                        nationalId = it
+                        viewModel.nationalId = it
                         if (it.trim().isNotEmpty()) isIdError = false
                     },
                     label = { Text(stringResource(id = R.string.hint_national_id)) },
@@ -145,12 +160,49 @@ fun PersonalInfoStepScreen(navController: NavController) {
                         }
                     }
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // الصورة
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .border(2.dp, GreenPrimary, CircleShape)
+                        .clickable {
+                            // فتح الاستوديو حصراً لاختيار الصور عند النقر
+                            photoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (viewModel.selectedImageUri != null) {
+                        // هون استخدمنا مكتبة coil لعرض الصورة
+                        AsyncImage(
+                            model = viewModel.selectedImageUri,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        // نص أو إيقونة تظهر في حال لم يتم اختيار صورة بعد
+                        Text(
+                            text = "إضافة\nصورة",
+                            color = TextDark.copy(alpha = 0.6f),
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+                }
             }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // زرار التحكم (السابق, التالي)
+        // (السابق, التالي)
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -165,9 +217,9 @@ fun PersonalInfoStepScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    val isNameEmpty = fullName.trim().isEmpty()
-                    val isPhoneInvalid = phoneNumber.trim().length < 10
-                    val isIdEmpty = nationalId.trim().isEmpty()
+                    val isNameEmpty = viewModel.fullName.trim().isEmpty()
+                    val isPhoneInvalid = viewModel.phone.trim().length < 10
+                    val isIdEmpty = viewModel.nationalId.trim().isEmpty()
 
                     if (isNameEmpty) isNameError = true
                     if (isPhoneInvalid) isPhoneError = true

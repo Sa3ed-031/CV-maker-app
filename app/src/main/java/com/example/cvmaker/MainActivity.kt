@@ -21,18 +21,24 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
 
+    // 🔄 تهيئة نسخة الـ ViewModel المشتركة لكل الخطوات هنا
+    val cvViewModel: CvViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+
     NavHost(navController = navController, startDestination = "splash") {
-        composable("splash") { SplashScreen(navController = navController) }
-        composable("login") { LoginScreen(navController = navController) }
-        composable("step1") { PersonalInfoStepScreen(navController = navController) }
-        composable("step2") { EducationalStepScreen(navController = navController) }
-        composable("step3") { SkillsStepScreen(navController = navController) }
-        composable("step4"){ AdditionalStepScreen(navController = navController)}
-        composable("dashboard") { DashboardScreen(navController = navController) }
+        composable(route = "splash") { SplashScreen(navController = navController) }
+        composable(route = "login") { LoginScreen(navController = navController) }
+
+        // تمرير الـ cvViewModel للشاشات الأربعة ليحفظوا البيانات الحقيقية جواته
+        composable(route = "step1") { PersonalInfoStepScreen(navController = navController, viewModel = cvViewModel) }
+        composable(route = "step2") { EducationalStepScreen(navController = navController, viewModel = cvViewModel) }
+        composable(route = "step3") { SkillsStepScreen(navController = navController, viewModel = cvViewModel) }
+        composable(route = "step4") { AdditionalStepScreen(navController = navController, viewModel = cvViewModel) }
+
+        // 👁️ إضافة الراوت الناقص لشاشة المراجعة وتمرير نفس الـ ViewModel لقراءة البيانات الفعلية
+        composable(route = "cv_preview") { CvPreviewScreen(navController = navController, viewModel = cvViewModel) }
     }
 }

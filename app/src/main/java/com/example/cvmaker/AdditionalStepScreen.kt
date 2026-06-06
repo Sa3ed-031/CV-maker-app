@@ -2,9 +2,7 @@ package com.example.cvmaker
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.cvmaker.ui.theme.GreenPrimary
 import com.example.cvmaker.ui.theme.BackgroundGray
@@ -20,10 +19,23 @@ import com.example.cvmaker.ui.theme.TextDark
 import com.example.cvmaker.ui.theme.CardWhite
 
 @Composable
-fun AdditionalStepScreen(navController: NavController) {
-    val context =androidx.compose.ui.platform.LocalContext
-    val scrollState = rememberScrollState()
-    val dynamicPlaceholder = stringResource(id = R.string.placeholder_dynamic_data)
+fun AdditionalStepScreen(
+    navController: NavController,
+    viewModel: CvViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+    var isProjectsError by remember { mutableStateOf(false) }
+    var isExperienceError by remember { mutableStateOf(false) }
+
+    val fieldColors = OutlinedTextFieldDefaults.colors(
+        focusedTextColor = TextDark,
+        unfocusedTextColor = TextDark,
+        focusedBorderColor = GreenPrimary,
+        unfocusedBorderColor = TextDark.copy(alpha = 0.3f),
+        focusedLabelColor = GreenPrimary,
+        unfocusedLabelColor = TextDark.copy(alpha = 0.6f),
+        errorBorderColor = MaterialTheme.colorScheme.error,
+        errorLabelColor = MaterialTheme.colorScheme.error
+    )
 
     Column(
         modifier = Modifier
@@ -34,18 +46,14 @@ fun AdditionalStepScreen(navController: NavController) {
     ) {
         Spacer(modifier = Modifier.height(24.dp))
 
-        // مؤشر علوي لرقم الخطوة
+        // كرت العنوان العلوي للخطوة الرابعة
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = CardDefaults.cardColors(containerColor = CardWhite),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
-            Row(
-                modifier = Modifier.padding(16.dp).fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Box(modifier = Modifier.padding(16.dp).fillMaxWidth(), contentAlignment = Alignment.Center) {
                 Text(
                     text = stringResource(id = R.string.step4_title),
                     color = GreenPrimary,
@@ -57,9 +65,11 @@ fun AdditionalStepScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // كرت مراجعة المحتوى (Scrollable Card)
+        // كرت فورم الإدخال
         Card(
-            modifier = Modifier.fillMaxWidth().weight(1f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = CardWhite),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -67,8 +77,7 @@ fun AdditionalStepScreen(navController: NavController) {
             Column(
                 modifier = Modifier
                     .padding(20.dp)
-                    .fillMaxSize()
-                    .verticalScroll(scrollState),
+                    .fillMaxSize(),
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
@@ -78,37 +87,62 @@ fun AdditionalStepScreen(navController: NavController) {
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
 
-                // بيانات شخصية
-                Text(text = stringResource(id = R.string.section_personal_title), color = GreenPrimary, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = TextDark.copy(alpha = 0.1f))
-                Text(text = "${stringResource(id = R.string.label_full_name)} $dynamicPlaceholder", color = TextDark, fontSize = 14.sp)
-                Text(text = "${stringResource(id = R.string.label_phone_number)} $dynamicPlaceholder", color = TextDark, fontSize = 14.sp)
+                // 1. حقل إدخال المشاريع متعدد الأسطر
+                OutlinedTextField(
+                    value = viewModel.projects,
+                    onValueChange = {
+                        viewModel.projects = it
+                        if (it.trim().isNotEmpty()) isProjectsError = false
+                    },
+                    label = { Text(stringResource(id = R.string.hint_projects)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = fieldColors,
+                    isError = isProjectsError,
+                    minLines = 5,
+                    supportingText = {
+                        if (isProjectsError) {
+                            Text(
+                                text = stringResource(id = R.string.error_empty_projects),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+                )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-                // المؤهلات
-                Text(text = stringResource(id = R.string.section_academic_title), color = GreenPrimary, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = TextDark.copy(alpha = 0.1f))
-                Text(text = "${stringResource(id = R.string.label_university)} $dynamicPlaceholder", color = TextDark, fontSize = 14.sp)
-                Text(text = "${stringResource(id = R.string.label_specialty)} $dynamicPlaceholder", color = TextDark, fontSize = 14.sp)
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                // ️المهارات واللغات
-                Text(text = stringResource(id = R.string.section_skills_title), color = GreenPrimary, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = TextDark.copy(alpha = 0.1f))
-                Text(text = "${stringResource(id = R.string.label_skills)} $dynamicPlaceholder", color = TextDark, fontSize = 14.sp)
-                Text(text = "${stringResource(id = R.string.label_languages)} $dynamicPlaceholder", color = TextDark, fontSize = 14.sp)
+                // 2. الخبرات (اختياري متعدد الأسطر
+                OutlinedTextField(
+                    value = viewModel.experience,
+                    onValueChange = {
+                        viewModel.experience = it
+                        if (it.trim().isNotEmpty()) isExperienceError = false
+                    },
+                    label = { Text(stringResource(id = R.string.hint_experience)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = fieldColors,
+                    isError = isExperienceError,
+                    minLines = 3,
+                    supportingText = {
+                        if (isExperienceError) {
+                            Text(
+                                text = stringResource(id = R.string.error_empty_projects),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    }
+                )
             }
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // زرار التحكم
+        // أزرار التحكم والتنقل السفلية
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            // زر رجوع للخطوة الثالثة (المهارات)
             Button(
                 onClick = { navController.navigate("step3") },
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.8f)),
@@ -117,32 +151,28 @@ fun AdditionalStepScreen(navController: NavController) {
                 Text(text = stringResource(id = R.string.btn_back), color = CardWhite)
             }
 
-            val context = androidx.compose.ui.platform.LocalContext.current
-
+            // زر التالي بينتقل لشاشة الـ Preview بعد التحقق من الإدخال
             Button(
                 onClick = {
-                    PdfExporter.exportCvToPdf(
-                        context = context,
-                        fullName = "أحمد محمد العلي",
-                        phone = "0933123456",
-                        nationalId = "01020034451",
-                        university = "جامعة دمشق",
-                        specialty = "هندسة البرمجيات",
-                        gradYear = "2026",
-                        experience = "مطور واجهات أمامية مستقل\nبناء أنظمة تسجيل حكومية متكاملة بـ Jetpack Compose",
-                        skills = "Kotlin, Jetpack Compose, UI Design, Git",
-                        languages = "العربية (اللغة الأم)، الإنجليزية (متقدم)"
-                    )
+
+                    val isProjectsEmpty = viewModel.projects.trim().isEmpty()
+                    val isExperienceEmpty = viewModel.experience.trim().isEmpty()
+
+                    if (isProjectsEmpty) isProjectsError= true
+                    if (isExperienceEmpty) isExperienceError = true
+
+                    if (!isProjectsEmpty && !isExperienceEmpty) {
+                        navController.navigate("cv_preview")
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = GreenPrimary),
                 shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.wrapContentWidth()
+                modifier = Modifier.width(120.dp)
             ) {
                 Text(
-                    text = stringResource(id = R.string.btn_export_cv),
+                    text = stringResource(id = R.string.btn_next),
                     color = CardWhite,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
+                    fontWeight = FontWeight.Bold
                 )
             }
         }

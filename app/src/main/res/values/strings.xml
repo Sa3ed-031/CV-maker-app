@@ -35,6 +35,8 @@
         <!-- <string name="personal_title">البيانات الشخصية</string> -->
         <string name="hint_phone">رقم الهاتف</string>
         <string name="hint_address">العنوان الحالي</string>
+        <string name="btn_select_photo">اضغط لإضافة صورة شخصية</string>
+        <string name="text_photo_selected">تم اختيار الصورة بنجاح</string>
 
         <!-- step #2 -->
         <string name="step2_title">الخطوة 2: المؤهلات والخبرات</string>
@@ -42,7 +44,6 @@
         <string name="hint_specialty">التخصص الدراسي</string>
         <string name="hint_graduation_year">سنة التخرج (YYYY)</string>
         <string name="hint_university">الجامعة / المعهد التعليمي</string>
-        <string name="hint_experience">الخبرات المهنية أو التدريبية (إن وجدت)</string>
         <string name="education_title">المؤهل التعليمي والخبرة</string>
         <string name="error_empty_university">الرجاء تحديد اسم الجامعة أو المؤسسة التعليمية!</string>
         <string name="error_empty_specialty">حقل التخصص مطلوب لبناء ملف السيرة الذاتية!</string>
@@ -58,32 +59,18 @@
         <string name="error_empty_skills">حقل المهارات أساسي ومطلب رئيسي لبناء ملف السيرة الذاتية!</string>
 
         <!-- step #4 -->
-        <string name="step4_title">الخطوة 4: مراجعة السيرة الذاتية</string>
-        <string name="step4_subtitle">يرجى مراجعة بياناتك الموثقة بدقة قبل إتمام العملية وتصدير الملف</string>
-        <string name="btn_finish">حفظ وإنشاء السيرة الذاتية PDF</string>
-        <string name="section_personal_title">البيانات الشخصية</string>
-        <string name="section_academic_title">المؤهلات الأكاديمية</string>
-        <string name="section_skills_title">المهارات واللغات</string>
-        <string name="btn_export_cv">تصدير وحفظ السيرة الذاتية</string>
-        <string name="label_full_name">الاسم الكامل: </string>
-        <string name="label_phone_number">رقم الهاتف: </string>
-        <string name="label_university">الجامعة / المعهد: </string>
-        <string name="label_specialty">التخصص الدراسي: </string>
-        <string name="label_skills">المهارات التقنية: </string>
-        <string name="label_languages">اللغات المتقنة: </string>
-        <string name="placeholder_dynamic_data">سيتم جلب البيانات الحقيقية لاحقاً</string>
+        <string name="step4_title">الخطوة 4: المشاريع والإنجازات</string>
+        <string name="step4_subtitle">أدخل المشاريع التي قمت بالعمل عليها لتدعيم سيرتك الذاتية</string>
+        <string name="hint_projects">المشاريع (مثال: تطوير تطبيق CVMaker، تصميم موقع تجاري...)</string>
+        <string name="hint_experience">الخبرات المهنية أو التدريبية (إن وجدت)</string>
+        <string name="error_empty_projects">الرجاء إدخال مشروع واحد على الأقل!</string>
+        <string name="error_empty_experience">الرجاء إدخال مشروع واحد على الأقل!</string>
 
-        <!-- Admin -->
-        <string name="dashboard_title">لوحة تحكم الموظف</string>
-        <string name="admin_panel_title">لوحة مراقبة المستندات والطلبات</string>
-        <string name="tab_pending">بانتظار المراجعة</string>
-        <string name="tab_approved">الطلبات المقبولة</string>
-        <string name="tab_rejected">الطلبات المرفوضة</string>
-        <string name="text_no_requests">لا يوجد طلبات في هذا القسم حالياً</string>
-        <string name="btn_logout_admin">تسجيل خروج الموظف</string>
-        <string name="label_applicant">المتقدم: </string>
-        <string name="label_national_id_admin">الرقم الوطني: </string>
-        <string name="btn_action_view">استعراض ومراجعة</string>
+        <!-- Preview CV -->
+        <string name="preview_title">العرض المسبق وتصدير الملف</string>
+        <string name="toggle_layout_style">نمط التصميم: عمودين حديث</string>
+        <string name="toggle_classic_style">نمط التصميم: كلاسيكي تقليدي</string>
+        <string name="btn_final_export">تأكيد التصدير والحفظ بالذاكرة</string>
 
         <!-- Print PDF -->
         <string name="toast_pdf_success">تم حفظ السيرة الذاتية بنجاح في مجلد Downloads!</string>
